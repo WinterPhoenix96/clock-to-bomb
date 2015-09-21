@@ -1,5 +1,3 @@
-walk(document.body);
-
 function walk(node) 
 {
 	// I stole this function from here:
@@ -40,4 +38,19 @@ function handleText(textNode) {
 	});
 	textNode.nodeValue = v;
 }
+
+var readyStateCheckInterval = setInterval(function() {
+	if (document.readyState === "complete") {
+		clearInterval(readyStateCheckInterval);
+		window.setTimeout(function() {
+			walk(document.body);
+		}, 500);
+	}
+}, 10);
+
+window.addEventListener("hashchange", function() {
+	window.setTimeout(function() {
+		walk(document.body);
+	}, 500);
+});
 
