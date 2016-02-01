@@ -1,17 +1,19 @@
-function walk(node) 
+walk(document.body);
+
+function walk(node)
 {
 	// I stole this function from here:
 	// http://is.gd/mwZp7E
 
 	var child, next;
 
-	switch ( node.nodeType )  
+	switch ( node.nodeType )
 	{
 		case 1:  // Element
 		case 9:  // Document
 		case 11: // Document fragment
 			child = node.firstChild;
-			while ( child ) 
+			while ( child )
 			{
 				next = child.nextSibling;
 				walk(child);
@@ -20,37 +22,19 @@ function walk(node)
 			break;
 
 		case 3: // Text node
-			if(node.parentElement.tagName.toLowerCase() != "script") {
-				handleText(node);
-			}
+			handleText(node);
 			break;
 	}
 }
 
-function handleText(textNode) {
+function handleText(textNode)
+{
 	var v = textNode.nodeValue;
 
-	// Replace Clock with Bomb
-	v = v.replace(/(C|c)lock/g, function(match, p1, offset, string) {
-		// c - 1 = b
-		b = String.fromCharCode(p1.charCodeAt(0) - 1);
-		return b + "omb";
-	});
+	v = v.replace(/\bClock\b/g, "Bomb");
+	v = v.replace(/\bclock\b/g, "bomb");
+	v = v.replace(/\bCLOCK\b/g, "BOMB");
+
+
 	textNode.nodeValue = v;
 }
-
-var readyStateCheckInterval = setInterval(function() {
-	if (document.readyState === "complete") {
-		clearInterval(readyStateCheckInterval);
-		window.setTimeout(function() {
-			walk(document.body);
-		}, 500);
-	}
-}, 10);
-
-window.addEventListener("hashchange", function() {
-	window.setTimeout(function() {
-		walk(document.body);
-	}, 500);
-});
-
